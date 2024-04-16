@@ -26,7 +26,7 @@ export class AuthService {
     const check = await this.usersService.getByEmail(body.email);
     console.log("check",!check);
     
-    if (!check==false) {
+    if (!check) {
       const newUser = {
         ...body,
         password: '',
@@ -51,10 +51,26 @@ export class AuthService {
             }),
       };
     }
+    return {
+      token: await this.generateAccessToken({
+          user_name: check.user_name,
+          email: check.email,
+          id: check.user_id,
+          role:check.role,
+          avatar:check.avatar
+        }),
+        user: check,
+        access_token: await this.generateAccessToken({
+            email: check.email,
+            id: check.user_id,
+            role:check.role,
+            avatar:check.avatar
+          }),
+    };
 }
 async loginByFaceBook(body:any) {
     const check = await this.usersService.getByEmail(body.email);
-    if (!check==false) {
+    if (!check) {
       const newUser = {
         ...body,
         password: '',
@@ -76,6 +92,22 @@ async loginByFaceBook(body:any) {
               avatar:check.avatar
             }),
       }
+    }
+    return {
+      token: await this.generateAccessToken({
+          user_name: check.user_name,
+          email: check.email,
+          id: check.user_id,
+          role:check.role,
+          avatar:check.avatar
+        }),
+        user: check,
+        access_token: await this.generateAccessToken({
+            email: check.email,
+            id: check.user_id,
+            role:check.role,
+            avatar:check.avatar
+          }),
     }
   }
 

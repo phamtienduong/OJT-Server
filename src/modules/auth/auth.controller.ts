@@ -41,7 +41,7 @@ export class AuthController {
   @HttpCode(201)
   async loginByFaceBook(@Body() body: any) {
     const user = await this.authService.loginByFaceBook(body);
-    // console.log(user);
+    console.log(user);
         return{
       message: 'Login successfully',
       data: user
