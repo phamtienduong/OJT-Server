@@ -14,14 +14,14 @@ export class ProductInfoEntity {
   ram: string;
   @Column({
     type: 'decimal',
-    precision: 10, // Số lượng chữ số trước và sau dấu thập phân
-    scale: 0, // Số lượng chữ số sau dấu thập phân
+    precision: 10,
+    scale: 0,
   })
   price: number;
   @Column()
   stock: number;
 
-  @OneToOne(() => ProductEntity, (product) => product.product_info)
+  @ManyToOne(() => ProductEntity, (product) => product.product_info)
   @JoinColumn({ name: 'product_id' })
   product_id: ProductEntity;
 

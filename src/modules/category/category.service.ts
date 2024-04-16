@@ -1,26 +1,77 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CategoryEntity } from './entities/category.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>,
+  ) {}
+
+  async createCategory(body: CreateCategoryDto) {
+    try {
+      const newCate = this.categoryRepository.create(body);
+      const result = await this.categoryRepository
+        .createQueryBuilder('category')
+        .insert()
+        .into(CategoryEntity)
+        .values(newCate)
+        .execute();
+
+      if (result.raw.affectedRows) {
+        return { message: 'Thêm cate vào thành công' };
+      } else {
+        return { message: 'Không thành công' };
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async getAll() {
+    const qb = this.categoryRepository.createQueryBuilder('category');
+    const category = await qb.getMany();
+    return category;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async updateCate(body: UpdateCategoryDto, param: any) {
+    try {
+      // console.log(param.id);
+      await this.categoryRepository
+        .createQueryBuilder()
+        .update(CategoryEntity)
+        .set(body)
+        .where('category_id = :id', { id: param.id })
+        .execute();
+      return { message: 'Cập nhật thành công' };
+    } catch (error) {
+      return { message: 'Lỗi rồi' };
+    }
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
+  async deleteCate(param: any) {
+    
+    try {
+     const result= await this.categoryRepository
+        .createQueryBuilder()
+        .delete()
+        .from(CategoryEntity)
+        .where('category_id = :id', { id: param.id })
+        .execute();
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+        if (result.affected > 0) {
+          return { message: 'Xóa cate thành công' };
+        } else {
+          return {
+            message: 'Không có hàng nào bị xóa',
+          };
+        }
+    } catch (error) {
+      return { message: 'Lỗi rồi' };
+    }
   }
 }

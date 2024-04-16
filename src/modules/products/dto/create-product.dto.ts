@@ -1,1 +1,6 @@
-export class CreateProductDto {}
+export class CreateProductDto {
+   product_name: string;
+   description: string;
+   default_image: string;
+   discount: number;
+}
