@@ -19,9 +19,9 @@ export class ProductEntity {
   createaAt: Date;
   @Column({
     type: 'tinyint',
-    default: '1',
+    default: 1,
   })
-  active: string;
+  active: number;
   @Column({
     type: 'longtext',
   })
@@ -34,7 +34,7 @@ export class ProductEntity {
   })
   discount: number;
 
-  @OneToOne(()=>ProductInfoEntity,(product_info)=>product_info.product_id)
+  @OneToMany(()=>ProductInfoEntity,(product_info)=>product_info.product_id)
   product_info:ProductInfoEntity
 
   @OneToMany(()=>ReviewEntity,(review)=>review.product_id)
