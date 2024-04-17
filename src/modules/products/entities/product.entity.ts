@@ -1,8 +1,10 @@
 import { BillDetailEntity } from 'src/modules/bill_detail/entities/bill_detail.entity';
+import { CartEntity } from 'src/modules/cart/entities/cart.entity';
+import { CategoryEntity } from 'src/modules/category/entities/category.entity';
 import { FavoriteProductEntity } from 'src/modules/favorite_product/entities/favorite_product.entity';
 import { ProductInfoEntity } from 'src/modules/product_info/entities/product_info.entity';
 import { ReviewEntity } from 'src/modules/review/entities/review.entity';
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -10,6 +12,12 @@ export class ProductEntity {
   product_id: number;
   @Column()
   product_name: string;
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 0,
+  })
+  price: number;
   @Column()
   description: string;
   @Column({
@@ -45,4 +53,12 @@ export class ProductEntity {
 
   @OneToMany(()=>BillDetailEntity,(bill_detail)=>bill_detail.product_id)
   bill_details:BillDetailEntity[]
+
+  @OneToMany(()=>CartEntity,(cart)=>cart.product_id )
+  carts:CartEntity[]
+
+
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  @JoinColumn({ name: 'category_id' })
+  category_id: CategoryEntity;
 }

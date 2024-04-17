@@ -12,6 +12,7 @@ export class ProductsService {
     private readonly productRepository: Repository<ProductEntity>,
   ) {}
   async createProduct(body: CreateProductDto) {
+    console.log(body);
     try {
       const newProduct = this.productRepository.create(body);
       const result = await this.productRepository
@@ -33,19 +34,26 @@ export class ProductsService {
 
   async getAll() {
     const qb = this.productRepository.createQueryBuilder('products');
-    const products = await qb.getMany();
-    return products;
+
+qb.leftJoinAndSelect('products.category_id', 'category');
+
+const products = await qb.getMany();
+
+return products;
   }
 
   async updateProducts(body: UpdateProductDto, param: any) {
+    console.log(body);
+    console.log(param);
+    
     try {
-      await this.productRepository
+      const result = await this.productRepository
         .createQueryBuilder()
         .update(ProductEntity)
         .set(body)
         .where('product_id = :id', { id: param.id })
         .execute();
-
+      console.log(result);
       return { message: 'Cập nhật thành công' };
     } catch (error) {
       return { message: 'Lỗi rồi' };

@@ -46,7 +46,7 @@ export class ProductInfoService {
     // console.log(body,param.id)
     try {
       const product_id = param.id;
-      const { color, ram, price, stock, category_id } = body;
+      const { color, ram, stock, category_id } = body;
 
       // console.log(typeof(category_id))
       const category = await this.categoryRepository.findOne({
@@ -58,9 +58,7 @@ export class ProductInfoService {
       const newProductInfo = this.productInfoRepository.create({
         color,
         ram,
-        price,
         stock,
-        category_id: category,
         product_id: product,
       });
       // console.log(newProductInfo)
@@ -75,7 +73,7 @@ export class ProductInfoService {
     try {
       const product_id = param;
       const product_info_id = param2;
-      const { color, ram, price, stock, category_id } = body;
+      const { color, ram, stock, category_id } = body;
       const category = await this.categoryRepository.findOne({
         where: { category_id },
       });
@@ -91,9 +89,7 @@ export class ProductInfoService {
         .set({
           color,
           ram,
-          price,
           stock,
-          category_id: category,
           product_id: product,
         })
         .where('product_info.product_info_id = :product_info_id', {
