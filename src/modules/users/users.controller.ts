@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -24,6 +24,34 @@ export class UsersController {
       data: result
     }
   }
+  @Put("update/:id")
+  async updateUser (@Param('id') id: string, @Body() user: any) {
+    
+    const result = await this.usersService.updateUser(id, user);
+
+    return {
+      message: 'Update user successfully',
+      data: result
+    }
+
+
+  }
+  @Patch('active/:id')
+  async changeStatusUser(@Param('id') id: string, ) {
+    try {
+      const result = await this.usersService.updateStatus(+id);
+      return {
+        message: 'Cập nhật thành công',
+        data: result
+      }
+
+    } catch (error) {
+      console.log(error);
+      
+    }  
+  }  
+
+
 
   
 

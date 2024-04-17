@@ -12,12 +12,7 @@ export class ProductInfoEntity {
   color: string;
   @Column()
   ram: string;
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 0,
-  })
-  price: number;
+  
   @Column()
   stock: number;
 
@@ -25,13 +20,8 @@ export class ProductInfoEntity {
   @JoinColumn({ name: 'product_id' })
   product_id: ProductEntity;
 
-  @OneToMany(()=>CartEntity,(cart)=>cart.product_info_id )
-  carts:CartEntity[]
-
   @OneToMany(()=>ImageEntity,(image)=>image.product_info_id)
   images:ImageEntity[];
 
-  @ManyToOne(() => CategoryEntity, (category) => category.product_info)
-  @JoinColumn({ name: 'category_id' })
-  category_id: CategoryEntity;
+
 }
