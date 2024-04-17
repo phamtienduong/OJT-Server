@@ -43,12 +43,12 @@ export class ProductEntity {
   discount: number;
 
   @OneToMany(()=>ProductInfoEntity,(product_info)=>product_info.product_id)
-  product_info:ProductInfoEntity
+  product_info:ProductInfoEntity[]
 
   @OneToMany(()=>ReviewEntity,(review)=>review.product_id)
   reviews:ReviewEntity[]
 
-  @OneToMany(()=>FavoriteProductEntity,(favorite_product)=>favorite_product.product_id,)
+  @OneToMany(()=>FavoriteProductEntity,(favorite_product)=>favorite_product.product_id)
   favorites:FavoriteProductEntity[]
 
   @OneToMany(()=>BillDetailEntity,(bill_detail)=>bill_detail.product_id)
