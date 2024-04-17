@@ -1,34 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { FavoriteProductService } from './favorite_product.service';
 import { CreateFavoriteProductDto } from './dto/create-favorite_product.dto';
-import { UpdateFavoriteProductDto } from './dto/update-favorite_product.dto';
 
-@Controller('favorite-product')
+@Controller('api/v1/favorite-products')
 export class FavoriteProductController {
-  constructor(private readonly favoriteProductService: FavoriteProductService) {}
+  constructor(private readonly favoriteProductService: FavoriteProductService) { }
 
   @Post()
-  create(@Body() createFavoriteProductDto: CreateFavoriteProductDto) {
-    return this.favoriteProductService.create(createFavoriteProductDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.favoriteProductService.findAll();
+  addFavorite(@Body() addFavoriteProductDto: CreateFavoriteProductDto) {
+    const { user_id, product_id } = addFavoriteProductDto;
+    this.favoriteProductService.addFavoriteProduct(+user_id, +product_id);
+    return {
+      message: 'thêm sản phẩm ưa thích thành công'
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.favoriteProductService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFavoriteProductDto: UpdateFavoriteProductDto) {
-    return this.favoriteProductService.update(+id, updateFavoriteProductDto);
+  getAll(@Param('id') id: string) {
+    return this.favoriteProductService.getAllFavor(+id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favoriteProductService.remove(+id);
+  remove(@Param('id') id: string, @Body() product_id: string) {
+    return this.favoriteProductService.removeFavorite(+id, +product_id);
   }
 }

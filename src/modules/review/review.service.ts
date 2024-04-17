@@ -1,26 +1,59 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ReviewEntity } from './entities/review.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReviewService {
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  constructor(@InjectRepository(ReviewEntity) private reviewRepository: Repository<ReviewEntity>) { }
+  async createReview(id: number, createReviewDto: CreateReviewDto) {
+    const { user_id } = createReviewDto;
+    return await this.reviewRepository.createQueryBuilder('review')
+      .insert()
+      .into(ReviewEntity)
+      .values({
+        ...createReviewDto,
+        user_id: user_id as any,
+        product_id: id as any,
+      })
+      .execute()
   }
 
-  findAll() {
-    return `This action returns all review`;
+  async reviewsInOneProduct(id: number, page: number) {
+    let limit = 5;
+    let skip = (page - 1) * limit;
+    return this.reviewRepository.createQueryBuilder('review')
+      .leftJoinAndSelect('review.product_id', 'product')
+      .leftJoinAndSelect('review.user_id', 'user')
+      .orderBy('review.review_id', 'DESC')
+      .where('product.product_id = :id', { id })
+      .skip(skip)
+      .take(limit)
+      .getMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  reviewsByUser() {
+
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  updateReview(id: number, updateReviewDto: UpdateReviewDto) {
+    return this.reviewRepository.createQueryBuilder('review')
+      .update(ReviewEntity)
+      .set({
+        ...updateReviewDto,
+        review_date: () => "CURRENT_TIMESTAMP"
+      })
+      .where('review.review_id = :id', { id })
+      .execute();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  deleteReview(id: number) {
+    return this.reviewRepository.createQueryBuilder('review')
+      .delete()
+      .from(ReviewEntity)
+      .where('review.review_id = :id', { id })
+      .execute()
   }
 }

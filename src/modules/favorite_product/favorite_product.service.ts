@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFavoriteProductDto } from './dto/create-favorite_product.dto';
-import { UpdateFavoriteProductDto } from './dto/update-favorite_product.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FavoriteProductEntity } from './entities/favorite_product.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FavoriteProductService {
-  create(createFavoriteProductDto: CreateFavoriteProductDto) {
-    return 'This action adds a new favoriteProduct';
+  constructor(@InjectRepository(FavoriteProductEntity) private favoriteRepository: Repository<FavoriteProductEntity>) { }
+  addFavoriteProduct(user_id: number, product_id: number) {
+    return this.favoriteRepository.createQueryBuilder('favorite')
+      .insert()
+      .into(FavoriteProductEntity)
+      .values({
+        user_id: user_id as any,
+        product_id: product_id as any
+      })
+      .execute()
   }
 
-  findAll() {
-    return `This action returns all favoriteProduct`;
+  getAllFavor(user_id: number) {
+    return this.favoriteRepository.createQueryBuilder('favorite')
+      .leftJoinAndSelect('favorite.product_id', 'product')
+      .leftJoinAndSelect('favorite.user_id', 'user')
+      .where('user.user_id = :id', { id: user_id })
+      .getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} favoriteProduct`;
-  }
-
-  update(id: number, updateFavoriteProductDto: UpdateFavoriteProductDto) {
-    return `This action updates a #${id} favoriteProduct`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} favoriteProduct`;
+  removeFavorite(id: number, product_id: number) {
+    return this.favoriteRepository.createQueryBuilder('favorite')
+      .leftJoinAndSelect('favorite.product_id', 'product')
+      .leftJoinAndSelect('favorite.user_id', 'user')
+      .delete()
+      .from(FavoriteProductEntity)
+      .where('user.user_id = :id', { id })
+      .andWhere('product.product_id = :product_id', { product_id })
+      .execute()
   }
 }
