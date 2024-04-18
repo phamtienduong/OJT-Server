@@ -12,6 +12,12 @@ export class ProductEntity {
   product_id: number;
   @Column()
   product_name: string;
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 0,
+  })
+  price: number;
   @Column()
   description: string;
   @Column({
@@ -36,6 +42,7 @@ export class ProductEntity {
   })
   discount: number;
 
+
   @Column({
     type: 'decimal',
     precision: 10,
@@ -58,11 +65,14 @@ export class ProductEntity {
   @OneToMany(() => BillDetailEntity, (bill_detail) => bill_detail.product_id)
   bill_details: BillDetailEntity[];
 
+
   @OneToMany(() => CartEntity, (cart) => cart.product_id)
   carts: CartEntity[];
+
 
   @ManyToOne(() => CategoryEntity, (category) => category.product)
   @JoinColumn({ name: 'category_id' })
   category_id: CategoryEntity;
+
 
 }

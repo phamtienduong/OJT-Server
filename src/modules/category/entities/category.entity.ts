@@ -1,4 +1,4 @@
-import { ProductInfoEntity } from "src/modules/product_info/entities/product_info.entity";
+
 import { ProductEntity } from "src/modules/products/entities/product.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -9,6 +9,8 @@ export class CategoryEntity {
   @Column()
   category_name: string;
 
+
   @OneToMany(() => ProductEntity, (product) => product.category_id)
   product: ProductEntity[];
+
 }
