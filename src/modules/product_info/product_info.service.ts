@@ -45,10 +45,10 @@ export class ProductInfoService {
   }
 
   async createDetail(body: CreateProductInfoDto, param: any) {
-    // console.log(body,param.id)
+    // console.log(body,param)
     try {
       const product_id = param.id;
-      const { color, ram, stock, category_id } = body;
+      const { color, ram, stock,image_path } = body;
 
       // console.log(typeof(category_id))
 
@@ -63,6 +63,15 @@ export class ProductInfoService {
       });
       // console.log(newProductInfo)
       const result = await this.productInfoRepository.save(newProductInfo);
+      // console.log(result,"resuilt")
+      const product_info_id = result.product_info_id;
+      //
+      const imagePathArray = Object.values(image_path);
+      const imagePathString = imagePathArray.join(',');
+      const newImage = await this.imageService.createDetail(
+        imagePathString,
+        product_info_id,
+      );
       return { message: 'thêm thành công' };
     } catch (error) {
       console.log(error);
@@ -72,7 +81,7 @@ export class ProductInfoService {
     // console.log(body,param,param2)
     const product_id = param;
     const product_info_id = param2;
-    const { color, ram, stock, category_id, image_path } = body;
+    const { color, ram, stock, image_path } = body;
   //  const image_path = body.image_path
   //
   //  console.log(body)
@@ -119,7 +128,7 @@ export class ProductInfoService {
   async deleteDetail(param: any, param2: any) {
     const product_info_id = param2;
     const product_id = param;
-
+const deleteImg = await this.imageService.deleteDetail(param2)
     const deleteResult = await this.productInfoRepository
       .createQueryBuilder('product_info')
       .delete()

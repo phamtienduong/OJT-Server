@@ -36,4 +36,10 @@ export class ImageController {
   deleteDetail(@Param('id') id: string) {
     return this.imageService.deleteDetail(id);
   }
+
+  @Post("/create/:id")
+  @ApiParam({ name: 'id', description: 'Product detail ID' })
+  createDetail(@Body() body: any, @Param('id') param: string) {
+    return this.imageService.createDetail(body, param);
+  }
 }

@@ -60,4 +60,21 @@ export class ImageService {
       console.log(error,"error")
     }
   }
+
+  async createDetail(body: any, param: any) {
+    // console.log(body,param)
+    try {
+      const product_info_id = param;
+      const  image_path  = body;
+      const newImage = this.imageRepository.create({
+        image_path,
+        product_info_id,
+      });
+      // console.log(newImage)
+      const result = await this.imageRepository.save(newImage);
+      return { message: 'thêm mới' };
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

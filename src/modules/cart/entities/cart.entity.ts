@@ -1,5 +1,4 @@
 
-import { ProductInfoEntity } from "src/modules/product_info/entities/product_info.entity";
 import { ProductEntity } from "src/modules/products/entities/product.entity";
 import { UserEntity } from "src/modules/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
