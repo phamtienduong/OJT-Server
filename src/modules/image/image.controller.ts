@@ -1,34 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ImageService } from './image.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
+import { ApiParam } from '@nestjs/swagger';
 
-@Controller('image')
+@Controller('/api/v1/image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
-
-  @Post()
-  create(@Body() createImageDto: CreateImageDto) {
-    return this.imageService.create(createImageDto);
+  @Get('/get-list')
+  getAll() {
+    return this.imageService.getAll();
+  }
+  @Get('/get-one/:id')
+  @ApiParam({ name: 'id', description: 'Product detail ID' })
+  getOne(@Param('id') id: string) {
+    return this.imageService.getOne(id);
   }
 
-  @Get()
-  findAll() {
-    return this.imageService.findAll();
+  @Patch("/update/:id")
+  @ApiParam({ name: 'id', description: 'Product detail ID' })
+  updateDetail(@Body() body: UpdateImageDto, @Param('id') id: string) {
+    return this.imageService.updateDetail(body, id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.imageService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateImageDto: UpdateImageDto) {
-    return this.imageService.update(+id, updateImageDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.imageService.remove(+id);
+  @Delete("/delete/:id")
+  @ApiParam({ name: 'id', description: 'Product detail ID' })
+  deleteDetail(@Param('id') id: string) {
+    return this.imageService.deleteDetail(id);
   }
 }

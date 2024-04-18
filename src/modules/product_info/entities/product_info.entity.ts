@@ -20,6 +20,9 @@ export class ProductInfoEntity {
   @JoinColumn({ name: 'product_id' })
   product_id: ProductEntity;
 
+
+ 
+
   @OneToMany(()=>ImageEntity,(image)=>image.product_info_id)
   images:ImageEntity[];
 

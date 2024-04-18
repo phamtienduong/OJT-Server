@@ -3,4 +3,5 @@ export class CreateProductInfoDto {
   ram: string;
   stock: number;
   category_id: number;
+  image_path: string;
 }
