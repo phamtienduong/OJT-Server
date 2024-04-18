@@ -23,6 +23,9 @@ export class ProductsController {
   @ApiParam({ name: 'id', description: 'Product ID' })
   @ApiBody({ type: UpdateProductDto })
   updateProducts(@Body() body: UpdateProductDto, @Param() param: string) {
+    // console.log("body",body);
+    // console.log("param",param);
+    
     return this.productsService.updateProducts(body, param);
   }
 

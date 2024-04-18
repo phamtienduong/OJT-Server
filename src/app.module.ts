@@ -25,6 +25,7 @@ import { BillDetailEntity } from './modules/bill_detail/entities/bill_detail.ent
 import { PaymentEntity } from './modules/payment/entities/payment.entity';
 import { ReviewEntity } from './modules/review/entities/review.entity';
 import { FavoriteProductEntity } from './modules/favorite_product/entities/favorite_product.entity';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [ 
@@ -37,7 +38,7 @@ import { FavoriteProductEntity } from './modules/favorite_product/entities/favor
       database:"corsair_database",
       entities:[UserEntity,AddressEntity,CategoryEntity,ProductEntity,ProductInfoEntity,ImageEntity,CartEntity,BillEntity,BillDetailEntity,PaymentEntity,ReviewEntity,FavoriteProductEntity],
       synchronize:true
-    }), CategoryModule, UsersModule, ProductsModule, ProductInfoModule, ImageModule, CartModule, FavoriteProductModule, AddressModule, ReviewModule, BillsModule, BillDetailModule, PaymentModule ,
+    }), CategoryModule, UsersModule, ProductsModule, ProductInfoModule, ImageModule, CartModule, FavoriteProductModule, AddressModule, ReviewModule, BillsModule, BillDetailModule, PaymentModule, AuthModule ,
     ],
   controllers: [],
   providers: [],

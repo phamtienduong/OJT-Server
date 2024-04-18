@@ -84,8 +84,6 @@ export class ProductInfoService {
      param2,
    );
     try {
-      
-
       const product = await this.productRepository.findOne({
         where: { product_id },
       });

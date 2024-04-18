@@ -1,5 +1,4 @@
 
-import { ProductInfoEntity } from "src/modules/product_info/entities/product_info.entity";
 import { ProductEntity } from "src/modules/products/entities/product.entity";
 import { UserEntity } from "src/modules/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -15,7 +14,9 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
    @JoinColumn({ name: 'user_id' })
    user_id: UserEntity;
 
+
    @ManyToOne(() => ProductEntity, (product) => product.carts)
    @JoinColumn({ name: 'product_id' })
    product_id: ProductEntity;
+
  }

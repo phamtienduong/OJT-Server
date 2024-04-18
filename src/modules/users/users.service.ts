@@ -1,26 +1,75 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import * as argon2 from 'argon2';
+
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(UserEntity) private userRespository : Repository<UserEntity>
+  ){}
+  async createUser(dataUser:any) {
+    try {
+      const user = this.userRespository.create(dataUser);
+      return await this.userRespository.save(user);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async getAllUser() {
+    try {
+      const result = await this.userRespository.find({where: {role:"user"}});
+      return result
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async getByEmail(email:string):Promise<UserEntity>{
+    return await this.userRespository.findOne({where:{email}});
+ }
+ async updateUser(id:string,data:any){
+ 
+   
+   const result = await this.userRespository.update(id,data);
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+    const resultAccount = await this.userRespository.findOne({where:{user_id: parseInt(id)}});
+    delete resultAccount.password
+    if(result.affected==0){
+      return {
+        message:"User not found",
+      }
+    }
+    return {
+      message:"Update successfully",
+      data: resultAccount
+    }
+ }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+ async updateStatus(id: number) {
+  const user = await this.userRespository.findOne({ where: { user_id: id } });
+  console.log(user);
+  if (user.status==0) {
+    const updateActive = await this.userRespository
+    .createQueryBuilder()
+    .update(UserEntity)
+    .set({ status: 1 })
+    .where("user_id=:id", { id })
+    .execute();
+    return updateActive
+  }else{
+    const updateActive1 = await this.userRespository
+    .createQueryBuilder()
+    .update(UserEntity)
+    .set({ status: 0 })
+    .where("user_id=:id", { id })
+    .execute();
+    return updateActive1 ;
   }
+}
 }
