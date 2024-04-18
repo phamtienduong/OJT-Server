@@ -1,8 +1,10 @@
 import { BillDetailEntity } from 'src/modules/bill_detail/entities/bill_detail.entity';
+import { CartEntity } from 'src/modules/cart/entities/cart.entity';
+import { CategoryEntity } from 'src/modules/category/entities/category.entity';
 import { FavoriteProductEntity } from 'src/modules/favorite_product/entities/favorite_product.entity';
 import { ProductInfoEntity } from 'src/modules/product_info/entities/product_info.entity';
 import { ReviewEntity } from 'src/modules/review/entities/review.entity';
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -34,15 +36,33 @@ export class ProductEntity {
   })
   discount: number;
 
-  @OneToMany(()=>ProductInfoEntity,(product_info)=>product_info.product_id)
-  product_info:ProductInfoEntity
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 0,
+  })
+  price: number;
 
-  @OneToMany(()=>ReviewEntity,(review)=>review.product_id)
-  reviews:ReviewEntity[]
+  @OneToMany(() => ProductInfoEntity, (product_info) => product_info.product_id)
+  product_info: ProductInfoEntity;
 
-  @OneToMany(()=>FavoriteProductEntity,(favorite_product)=>favorite_product.product_id,)
-  favorites:FavoriteProductEntity[]
+  @OneToMany(() => ReviewEntity, (review) => review.product_id)
+  reviews: ReviewEntity[];
 
-  @OneToMany(()=>BillDetailEntity,(bill_detail)=>bill_detail.product_id)
-  bill_details:BillDetailEntity[]
+  @OneToMany(
+    () => FavoriteProductEntity,
+    (favorite_product) => favorite_product.product_id,
+  )
+  favorites: FavoriteProductEntity[];
+
+  @OneToMany(() => BillDetailEntity, (bill_detail) => bill_detail.product_id)
+  bill_details: BillDetailEntity[];
+
+  @OneToMany(() => CartEntity, (cart) => cart.product_id)
+  carts: CartEntity[];
+
+  @ManyToOne(() => CategoryEntity, (category) => category.product)
+  @JoinColumn({ name: 'category_id' })
+  category_id: CategoryEntity;
+
 }

@@ -3,4 +3,5 @@ export class CreateProductDto {
    description: string;
    default_image: string;
    discount: number;
+   price:number
 }
