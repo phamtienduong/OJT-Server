@@ -3,12 +3,21 @@ import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 
-@Controller('api/v1/reviews')
+
+@Controller('api/v1/review')
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService) { }
-  @Post('product/:id')
-  createNewReview(@Param('id') id: string, @Body() createReviewDto: CreateReviewDto) {
-    return this.reviewService.createReview(+id, createReviewDto);
+  constructor(private readonly reviewService: ReviewService) {}
+
+  @Post()
+  async create(@Body() createReviewDto: CreateReviewDto) {
+    return this.reviewService.create(createReviewDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.reviewService.findAll();
+
+
   }
 
   @Get('product/:id')

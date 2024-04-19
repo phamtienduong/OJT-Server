@@ -26,6 +26,8 @@ import { PaymentEntity } from './modules/payment/entities/payment.entity';
 import { ReviewEntity } from './modules/review/entities/review.entity';
 import { FavoriteProductEntity } from './modules/favorite_product/entities/favorite_product.entity';
 import { AuthModule } from './modules/auth/auth.module';
+import { Impd } from './modules/impd/entity/impd.entity';
+import { ImpdModule } from './modules/impd/impd.module';
 
 @Module({
   imports: [ 
@@ -36,9 +38,14 @@ import { AuthModule } from './modules/auth/auth.module';
       username:"root",
       password:"",
       database:"corsair_database",
-      entities:[UserEntity,AddressEntity,CategoryEntity,ProductEntity,ProductInfoEntity,ImageEntity,CartEntity,BillEntity,BillDetailEntity,PaymentEntity,ReviewEntity,FavoriteProductEntity],
+      entities:[UserEntity,AddressEntity,CategoryEntity,ProductEntity,ProductInfoEntity,
+        ImageEntity,CartEntity,BillEntity,BillDetailEntity,PaymentEntity,ReviewEntity,
+        FavoriteProductEntity, Impd],
       synchronize:true
-    }), CategoryModule, UsersModule, ProductsModule, ProductInfoModule, ImageModule, CartModule, FavoriteProductModule, AddressModule, ReviewModule, BillsModule, BillDetailModule, PaymentModule, AuthModule ,
+    }), CategoryModule, UsersModule, ProductsModule, ProductInfoModule, 
+    ImageModule, CartModule, FavoriteProductModule, AddressModule, 
+    ReviewModule, BillsModule, BillDetailModule, PaymentModule, AuthModule
+
     ],
   controllers: [],
   providers: [],

@@ -16,15 +16,15 @@ export class ProductInfoEntity {
   @Column()
   stock: number;
 
+  @Column()
+  image: string;
+
   @ManyToOne(() => ProductEntity, (product) => product.product_info)
   @JoinColumn({ name: 'product_id' })
   product_id: ProductEntity;
 
 
- 
-
-  @OneToMany(()=>ImageEntity,(image)=>image.product_info_id)
-  images:ImageEntity[];
-
+  // @OneToMany(()=>ImageEntity,(image)=>image.product_info_id)
+  // images:ImageEntity[];
 
 }

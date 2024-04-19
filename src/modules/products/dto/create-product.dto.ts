@@ -6,6 +6,6 @@ export class CreateProductDto {
    default_image: string;
    discount: number;
 
-   price:number
+   images?: string[];
 
 }

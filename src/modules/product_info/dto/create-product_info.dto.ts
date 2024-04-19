@@ -2,6 +2,8 @@ export class CreateProductInfoDto {
   color: string;
   ram: string;
   stock: number;
-  category_id: number;
-  image_path: string;
+
+  image: string;
+  // category_id: number;
+
 }

@@ -21,6 +21,23 @@ export class ProductInfoService {
   ) {}
 
   async getAll() {
+
+    // const product_info = await this.productInfoRepository
+    //   .createQueryBuilder('product_info')
+    //   .leftJoinAndSelect('product_info.product_id', 'product')
+    //   .leftJoinAndSelect('product_info.category_id', 'category')
+    //   .select(['product.product_id', 'category.category_id'])
+    //   .getMany();
+   const product_info = await this.productInfoRepository
+     .createQueryBuilder('product_info')
+     .leftJoinAndSelect('product_info.product_id', 'product')
+     .getMany();
+
+   return product_info;
+  }
+  async getOne(param: any) {
+    const product_id = param.id;
+
     const product_info = await this.productInfoRepository
       .createQueryBuilder('product_info')
       .leftJoinAndSelect('product_info.product_id', 'product')
@@ -48,9 +65,8 @@ export class ProductInfoService {
     // console.log(body,param)
     try {
       const product_id = param.id;
-      const { color, ram, stock,image_path } = body;
 
-      // console.log(typeof(category_id))
+      const { color, ram, stock,image } = body;
 
       const product = await this.productRepository.findOne({
         where: { product_id },
@@ -59,7 +75,9 @@ export class ProductInfoService {
         color,
         ram,
         stock,
+        image,
         product_id: product,
+
       });
       // console.log(newProductInfo)
       const result = await this.productInfoRepository.save(newProductInfo);
@@ -93,6 +111,11 @@ export class ProductInfoService {
      param2,
    );
     try {
+
+      const product_id = param;
+      const product_info_id = param2;
+      const { color, ram, stock,image  } = body;
+
       const product = await this.productRepository.findOne({
         where: { product_id },
       });
@@ -103,6 +126,7 @@ export class ProductInfoService {
           color,
           ram,
           stock,
+          image,
           product_id: product,
         })
         .where('product_info.product_info_id = :product_info_id', {
