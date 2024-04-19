@@ -28,7 +28,6 @@ export class ProductInfoService {
    const product_info = await this.productInfoRepository
      .createQueryBuilder('product_info')
      .leftJoinAndSelect('product_info.product_id', 'product')
-     .leftJoinAndSelect('product_info.category_id', 'category')
      .getMany();
 
    return product_info;
@@ -46,12 +45,7 @@ export class ProductInfoService {
     // console.log(body,param.id)
     try {
       const product_id = param.id;
-      const { color, ram, stock, category_id } = body;
-
-      // console.log(typeof(category_id))
-      const category = await this.categoryRepository.findOne({
-        where: { category_id },
-      });
+      const { color, ram, stock,image } = body;
       const product = await this.productRepository.findOne({
         where: { product_id },
       });
@@ -59,7 +53,9 @@ export class ProductInfoService {
         color,
         ram,
         stock,
+        image,
         product_id: product,
+
       });
       // console.log(newProductInfo)
       const result = await this.productInfoRepository.save(newProductInfo);
@@ -73,13 +69,7 @@ export class ProductInfoService {
     try {
       const product_id = param;
       const product_info_id = param2;
-      const { color, ram, stock, category_id } = body;
-      const category = await this.categoryRepository.findOne({
-        where: { category_id },
-      });
-      if (!category) {
-        return { success: false, message: 'Category not found' };
-      }
+      const { color, ram, stock,image  } = body;
       const product = await this.productRepository.findOne({
         where: { product_id },
       });
@@ -90,6 +80,7 @@ export class ProductInfoService {
           color,
           ram,
           stock,
+          image,
           product_id: product,
         })
         .where('product_info.product_info_id = :product_info_id', {

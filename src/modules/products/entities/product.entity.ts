@@ -2,6 +2,7 @@ import { BillDetailEntity } from 'src/modules/bill_detail/entities/bill_detail.e
 import { CartEntity } from 'src/modules/cart/entities/cart.entity';
 import { CategoryEntity } from 'src/modules/category/entities/category.entity';
 import { FavoriteProductEntity } from 'src/modules/favorite_product/entities/favorite_product.entity';
+import { Impd } from 'src/modules/impd/entity/impd.entity';
 import { ProductInfoEntity } from 'src/modules/product_info/entities/product_info.entity';
 import { ReviewEntity } from 'src/modules/review/entities/review.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -61,4 +62,7 @@ export class ProductEntity {
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   @JoinColumn({ name: 'category_id' })
   category_id: CategoryEntity;
+
+  @OneToMany(() => Impd, impd => impd.product)
+  impds: Impd[];
 }
