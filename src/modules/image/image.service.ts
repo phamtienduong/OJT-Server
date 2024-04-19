@@ -68,7 +68,7 @@ export class ImageService {
       const  image_path  = body;
       const newImage = this.imageRepository.create({
         image_path,
-        product_info_id,
+        // product_info_id,
       });
       // console.log(newImage)
       const result = await this.imageRepository.save(newImage);

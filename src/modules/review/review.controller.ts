@@ -8,17 +8,17 @@ import { UpdateReviewDto } from './dto/update-review.dto';
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
-  @Post()
-  async create(@Body() createReviewDto: CreateReviewDto) {
-    return this.reviewService.create(createReviewDto);
-  }
+  // @Post()
+  // async create(@Body() createReviewDto: CreateReviewDto) {
+  //   return this.reviewService.create(createReviewDto);
+  // }
 
   @Get()
-  findAll() {
-    return this.reviewService.findAll();
+  // findAll() {
+  //   return this.reviewService.findAll();
 
 
-  }
+  // }
 
   @Get('product/:id')
   async getReviewsByProduct(@Param('id') id: string, @Query('page') page: string) {
