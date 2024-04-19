@@ -43,26 +43,40 @@ export class ProductEntity {
   })
   discount: number;
 
-  @OneToMany(()=>ProductInfoEntity,(product_info)=>product_info.product_id)
-  product_info:ProductInfoEntity
 
-  @OneToMany(()=>ReviewEntity,(review)=>review.product_id)
-  reviews:ReviewEntity[]
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 0,
+  })
+  price: number;
 
-  @OneToMany(()=>FavoriteProductEntity,(favorite_product)=>favorite_product.product_id,)
-  favorites:FavoriteProductEntity[]
+  @OneToMany(() => ProductInfoEntity, (product_info) => product_info.product_id)
+  product_info: ProductInfoEntity;
 
-  @OneToMany(()=>BillDetailEntity,(bill_detail)=>bill_detail.product_id)
-  bill_details:BillDetailEntity[]
+  @OneToMany(() => ReviewEntity, (review) => review.product_id)
+  reviews: ReviewEntity[];
 
-  @OneToMany(()=>CartEntity,(cart)=>cart.product_id )
-  carts:CartEntity[]
+  @OneToMany(
+    () => FavoriteProductEntity,
+    (favorite_product) => favorite_product.product_id,
+  )
+  favorites: FavoriteProductEntity[];
+
+  @OneToMany(() => BillDetailEntity, (bill_detail) => bill_detail.product_id)
+  bill_details: BillDetailEntity[];
 
 
-  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  @OneToMany(() => CartEntity, (cart) => cart.product_id)
+  carts: CartEntity[];
+
+
+  @ManyToOne(() => CategoryEntity, (category) => category.product)
   @JoinColumn({ name: 'category_id' })
   category_id: CategoryEntity;
 
+
   @OneToMany(() => Impd, impd => impd.product)
   impds: Impd[];
+
 }

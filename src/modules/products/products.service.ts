@@ -3,16 +3,20 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
+
 import { DataSource, Repository } from 'typeorm';
 import { Impd } from '../impd/entity/impd.entity';
+
 
 @Injectable()
 export class ProductsService {
   constructor(
+
     @InjectRepository(ProductEntity) private readonly productRepository: Repository<ProductEntity>,
     @InjectRepository(Impd) private readonly impdRepository: Repository<Impd>,
     private readonly dataSource: DataSource
     ) {}
+
   async createProduct(body: CreateProductDto) {
     console.log(body);
     try {
@@ -55,8 +59,10 @@ export class ProductsService {
   }
 
   async updateProducts(body: UpdateProductDto, param: any) {
+
     console.log(body);
     console.log(param);
+
 
     try {
       const result = await this.productRepository
@@ -65,9 +71,13 @@ export class ProductsService {
         .set(body)
         .where('product_id = :id', { id: param.id })
         .execute();
-      console.log(result);
+
+
+      // console.log(result);
+
       return { message: 'Cập nhật thành công' };
     } catch (error) {
+      // console.log(error)
       return { message: 'Lỗi rồi' };
     }
   }
