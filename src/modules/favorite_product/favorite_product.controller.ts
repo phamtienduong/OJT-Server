@@ -6,9 +6,11 @@ import { CreateFavoriteProductDto } from './dto/create-favorite_product.dto';
 export class FavoriteProductController {
   constructor(private readonly favoriteProductService: FavoriteProductService) { }
 
-  @Post()
+  @Post("/add")
   addFavorite(@Body() addFavoriteProductDto: CreateFavoriteProductDto) {
     const { user_id, product_id } = addFavoriteProductDto;
+    console.log( user_id, product_id);
+    
     this.favoriteProductService.addFavoriteProduct(+user_id, +product_id);
     return {
       message: 'thêm sản phẩm ưa thích thành công'

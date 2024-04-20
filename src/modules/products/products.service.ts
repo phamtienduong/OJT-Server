@@ -37,6 +37,15 @@ export class ProductsService {
       return { message: 'Đã xảy ra lỗi' };
     }
   }
+  async getProductById (id: number) {
+    const product = await this.productRepository
+    .createQueryBuilder('products')
+    .leftJoinAndSelect('products.impds', 'images')
+    .leftJoinAndSelect('products.product_info', 'product_info')
+    .where('products.product_id = :id', { id: id })
+    .getOne();
+    return product
+  }
 
   async createImages(data: string[], id: number) {
     const queryRunner = this.dataSource.createQueryRunner();

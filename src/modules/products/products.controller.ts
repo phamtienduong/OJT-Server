@@ -38,6 +38,15 @@ export class ProductsController {
     
     return await this.productsService.updateProducts(body, param);
   }
+  @Get('get-product/:id')
+  @ApiParam({ name: 'id', description: 'Product ID' })
+  async getProductById(@Param("id") id: any) {
+    // console.log("=>>>>",id);
+    
+    const result = await this.productsService.getProductById(+id);
+    return result
+    
+  }
 
   @Delete('/delete/:id')
   @ApiParam({ name: 'id', description: 'Product ID' })
