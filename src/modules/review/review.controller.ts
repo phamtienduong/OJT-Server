@@ -1,26 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, BadRequestException, ParseIntPipe } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-
 
 @Controller('api/v1/review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
-  // @Post()
-  // async create(@Body() createReviewDto: CreateReviewDto) {
-  //   return this.reviewService.create(createReviewDto);
-  // }
+  @Post("create")
+  async createComment(@Body() createReviewDto: CreateReviewDto) {
+    const result = await this.reviewService.createReview(createReviewDto);
 
-  @Get()
+    if (!result) {
+      throw new BadRequestException("No create review")
+    }
+
+    return {
+      statusCode: 200,
+      message: 'Create review success',
+      data: result
+    }
+  }
+
+
+  @Get('avg-start/:id')
+  async avgStar(@Param('id', ParseIntPipe) id: number) {
+    const result = await this.reviewService.getAvgRatingProductDetail(id);
+
+    return {
+      statusCode: 200,
+      message: "get avg rating oke",
+      data: result
+    }
+  }
+
+
+  // @Get()
   // findAll() {
   //   return this.reviewService.findAll();
 
 
   // }
 
-  @Get('product/:id')
+  @Get('listReview/:id')
   async getReviewsByProduct(@Param('id') id: string, @Query('page') page: string) {
     try {
       let res = await this.reviewService.reviewsInOneProduct(+id, +page);

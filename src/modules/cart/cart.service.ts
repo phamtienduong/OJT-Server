@@ -12,115 +12,120 @@ export class CartService {
   constructor(
     @InjectRepository(CartEntity)
     private readonly cartRepository: Repository<CartEntity>,
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: Repository<ProductEntity>,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async getAll() {
-    const product_info = await this.cartRepository
-      .createQueryBuilder('cart')
-      .leftJoinAndSelect('cart.product_id', 'product')
-      .leftJoinAndSelect('cart.user_id', 'users')
-      .getMany();
-
-    return product_info;
-  }
-
-  async getOne(param) {
-    console.log(param.id);
-    const user_id = param.id;
-    const product_info = await this.cartRepository
-      .createQueryBuilder('cart')
-      .where('cart.user_id = :user_id', { user_id })
-      .leftJoinAndSelect('cart.product_id', 'product')
-      .getMany();
-    return product_info;
-  }
-
-  async addToCart(body: CreateCartDto) {
-    const { user_id, product_id, quantity } = body;
-    // console.log(body)
-    const user = await this.userRepository
-      .createQueryBuilder('user')
-      .where('user.user_id = :user_id', { user_id })
-      .getOne();
-
-    const product = await this.productRepository
-      .createQueryBuilder('product')
-      .where('product.product_id = :product_id', { product_id })
-      .getOne();
-
-    const cartItem = this.cartRepository.create({
-      user_id: user,
-      product_id: product,
-      quantity: 1,
-    });
-
-    const savedCartItem = await this.cartRepository.save(cartItem);
-
-    return { message: 'Thêm vào giỏ hàng thành công' };
-  }
-
-  async updateCart(body: UpdateCartDto, param: any) {
-    const { status, product_id } = body;
-    const user_id = param.id;
-    const user = await this.userRepository
-      .createQueryBuilder('user')
-      .where('user.user_id = :user_id', { user_id })
-      .getOne();
-    const cart = await this.cartRepository
-      .createQueryBuilder('cart')
-      .where('cart.user_id = :user_id', { user_id })
-      .andWhere('cart.product_id = :product_id', { product_id })
-      .getOne();
-    // console.log(cart.cart_id)
-    if (!cart) {
-      return { message: 'Không tìm thấy cart' };
-    }
-
-    // console.log(cart.quantity)
-    const savedCart = await this.cartRepository
-      .createQueryBuilder()
-      .update(CartEntity)
-      .set({ quantity: cart.quantity + status })
-      .where('cart.cart_id = :cart_id', { cart_id: cart.cart_id })
-      .execute();
-
-    return { message: 'cap nhap thanh cong' };
-  }
-
-  async deleteCart(body: UpdateCartDto, param: any) {
-
-    try {
-      const product_id= body.product_id;
-      // console.log(body)
-      const user_id = param.id;
-      const user = await this.userRepository
-        .createQueryBuilder('user')
-        .where('user.user_id = :user_id', { user_id })
-        .getOne();
-      const cart = await this.cartRepository
-        .createQueryBuilder('cart')
-        .where('cart.user_id = :user_id', { user_id })
-        .andWhere('cart.product_id = :product_id', { product_id })
-        .getOne();
-      // console.log(cart.cart_id)
-      if (!cart) {
-        return { message: 'Không tìm thấy cart' };
-      }
-      const savedCart = await this.cartRepository
+  async addToCart(user_id: number, product_id: any) {
+    const checkCart = await this.findOne(user_id, product_id);
+    // console.log(checkCart);
+    if (checkCart.length > 0) {
+      const updateCart = await this.cartRepository
         .createQueryBuilder()
-        .delete()
-        .from(CartEntity)
-        .where('cart.cart_id = :cart_id', { cart_id: cart.cart_id })
+        .update(CartEntity)
+        .set({ quantity: checkCart[0].quantity + 1 })
+        .where('user_id = :user_id', { user_id: user_id })
+        .andWhere('product_id = :product_id', {
+          product_id: product_id,
+        })
         .execute();
-
-      return { message: 'Xóa thành công' };
-    } catch (error) {
-      console.error(error);
-      throw new Error('Có lỗi xảy ra khi xóa giỏ hàng.');
+      return {
+        message: 'Add product to cart successfully',
+        data: updateCart,
+      };
+    } else {
+      const newCart = await this.cartRepository
+        .createQueryBuilder()
+        .insert()
+        .into(CartEntity)
+        .values({
+          quantity: 1,
+          user_id: user_id as any,
+          product_id: product_id,
+        })
+        .execute();
+      return {
+        message: 'Add to cart successfully',
+        data: newCart,
+      };
     }
+  }
+  async findOne(user_id: number, product_id: any) {
+    // console.log(userid,productid,"vao check")
+
+    const checkCart = await this.cartRepository
+      .createQueryBuilder()
+      .select('*')
+      .where('user_id = :user_id', { user_id: user_id })
+      .andWhere('product_id = :product_id', {
+        product_id: product_id,
+      })
+      .execute();
+    // return `This action returns a #${id} cart`;
+    return checkCart;
+  }
+  async listCart(user_id: number) {
+    const checkCart = await this.cartRepository
+      .createQueryBuilder('cart')
+      .innerJoinAndSelect('cart.product_id', 'product') // Sử dụng alias "product" thay vì "products"
+      .innerJoinAndSelect('product.impds', 'images')
+      .innerJoinAndSelect('product.product_info', 'product_info')
+      .where('cart.user_id = :user_id', { user_id: user_id })
+      .getMany();
+    return checkCart;
+  }
+
+  async updateQuantityIncre(creatquantity: any) {
+    try {
+      const cart = await this.cartRepository
+        .createQueryBuilder()
+        .update(CartEntity)
+        .set({ quantity: () => 'quantity + 1' }) // Tăng quantity lên 1
+        .where('cart_id = :cart_id', { cart_id: creatquantity.cart_id })
+        .execute();
+      return {
+        message: 'Update quantity successfully',
+        data: cart,
+      };
+    } catch (error) {
+      // Xử lý lỗi
+      console.log(error);
+      return {
+        message: 'Failed to update quantity',
+        error: error.message,
+      };
+    }
+  }
+
+  async updateQuantityDecre(creatquantity: any) {
+    try {
+      const cart = await this.cartRepository
+        .createQueryBuilder()
+        .update(CartEntity)
+        .set({ quantity: () => 'quantity - 1' }) // Giảm quantity đi 1
+        .where('cart_id = :cart_id', { cart_id: creatquantity.cart_id })
+        .execute();
+      return {
+        message: 'Update quantity successfully',
+        data: cart,
+      };
+    } catch (error) {
+      // Xử lý lỗi
+      console.log(error);
+      return {
+        message: 'Failed to update quantity',
+        error: error.message,
+      };
+    }
+  }
+  async deleteCart(cart_id: number) {
+    const deleteCart = await this.cartRepository
+      .createQueryBuilder()
+      .delete()
+      .from(CartEntity)
+      .where('cart_id = :cart_id', { cart_id: cart_id })
+      .execute();
+    return {
+      message: 'Delete cart successfully',
+      data: deleteCart,
+    };
   }
 }
