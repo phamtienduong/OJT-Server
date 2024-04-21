@@ -44,12 +44,7 @@ export class ProductEntity {
   discount: number;
 
 
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 0,
-  })
-  price: number;
+
 
   @OneToMany(() => ProductInfoEntity, (product_info) => product_info.product_id)
   product_info: ProductInfoEntity;

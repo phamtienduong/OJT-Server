@@ -7,15 +7,14 @@ import { ProductEntity } from './entities/product.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Impd } from '../impd/entity/impd.entity';
 
-
 @Injectable()
 export class ProductsService {
   constructor(
-
-    @InjectRepository(ProductEntity) private readonly productRepository: Repository<ProductEntity>,
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
     @InjectRepository(Impd) private readonly impdRepository: Repository<Impd>,
-    private readonly dataSource: DataSource
-    ) {}
+    private readonly dataSource: DataSource,
+  ) {}
 
   async createProduct(body: CreateProductDto) {
     console.log(body);
@@ -29,7 +28,7 @@ export class ProductsService {
         .execute();
 
       if (result.raw.affectedRows) {
-        return { message: 'Thêm vào thành công', status: 1, data: result  };
+        return { message: 'Thêm vào thành công', status: 1, data: result };
       } else {
         return { message: 'Không thành công' };
       }
@@ -37,15 +36,26 @@ export class ProductsService {
       return { message: 'Đã xảy ra lỗi' };
     }
   }
+  async getProductById(id: number) {
+    const product = await this.productRepository
+      .createQueryBuilder('products')
+      .leftJoinAndSelect('products.impds', 'images')
+      .leftJoinAndSelect('products.product_info', 'product_info')
+      .where('products.product_id = :id', { id: id })
+      .getOne();
+    return product;
+  }
 
   async createImages(data: string[], id: number) {
     const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect()
-    
+    await queryRunner.connect();
+
     for (let i = 0; i < data.length; i++) {
-        await queryRunner.manager.query(`INSERT INTO images (url, product_id) VALUES ('${data[i]}', '${id}')`);
+      await queryRunner.manager.query(
+        `INSERT INTO images (url, product_id) VALUES ('${data[i]}', '${id}')`,
+      );
     }
-    await queryRunner.release()
+    await queryRunner.release();
   }
   async getAll() {
     const qb = this.productRepository.createQueryBuilder('products');
@@ -57,12 +67,19 @@ export class ProductsService {
 
     return products;
   }
+  async getProductsByCategoryId(id: number) {
+    const products = await this.productRepository
+      .createQueryBuilder('products')
+      .leftJoinAndSelect('products.impds', 'images')
+      .leftJoinAndSelect('products.product_info', 'product_info')
+      .where('products.category_id = :id', { id: id })
+      .getMany();
+    return products;
+  }
 
   async updateProducts(body: UpdateProductDto, param: any) {
-
     console.log(body);
     console.log(param);
-
 
     try {
       const result = await this.productRepository
@@ -72,7 +89,6 @@ export class ProductsService {
         .where('product_id = :id', { id: param.id })
         .execute();
 
-
       // console.log(result);
 
       return { message: 'Cập nhật thành công' };
@@ -81,7 +97,6 @@ export class ProductsService {
       return { message: 'Lỗi rồi' };
     }
   }
-
 
   async deleteImages(param: any) {
     try {
@@ -112,17 +127,19 @@ export class ProductsService {
 
   async updateImage(data: any) {
     try {
-      const {id, url} = data
+      const { id, url } = data;
 
       const queryRunner = this.dataSource.createQueryRunner();
-      await queryRunner.connect()
-    
-      await queryRunner.manager.query(`UPDATE images SET url='${url}' WHERE id=${id};`);
-    
-      await queryRunner.release()
+      await queryRunner.connect();
+
+      await queryRunner.manager.query(
+        `UPDATE images SET url='${url}' WHERE id=${id};`,
+      );
+
+      await queryRunner.release();
     } catch (error) {
       console.log(error);
-      return error
+      return error;
     }
   }
 }

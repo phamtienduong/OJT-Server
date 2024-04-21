@@ -54,7 +54,7 @@ export class CategoryService {
   }
 
   async deleteCate(param: any) {
-    
+    console.log(param);
     try {
      const result= await this.categoryRepository
         .createQueryBuilder()
@@ -62,7 +62,8 @@ export class CategoryService {
         .from(CategoryEntity)
         .where('category_id = :id', { id: param.id })
         .execute();
-
+        console.log(result);
+        
         if (result.affected > 0) {
           return { message: 'Xóa cate thành công' };
         } else {

@@ -16,35 +16,25 @@ import { ApiBody, ApiParam } from '@nestjs/swagger';
 @Controller('api/v1/cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
-  @Get('/cart-list')
-  getAll() {
-    return this.cartService.getAll();
+  @Post('add')
+  async addToCart(@Body() body: CreateCartDto) {
+    const { user_id, product_id } = body;
+    return await this.cartService.addToCart(user_id, product_id);
   }
-
-  @Get('/:id')
-  @ApiParam({ name: 'id', description: 'User ID' })
-  getOne(@Param() param: string) {
-    return this.cartService.getOne(param);
+  @Get('list/:id')
+  async listCart(@Param('id') id: number) {
+    return await this.cartService.listCart(id);
   }
-
-  @Post()
-  @ApiBody({ type: CreateCartDto })
-  addToCart(@Body() body: CreateCartDto) {
-    // console.log(body)
-    return this.cartService.addToCart(body);
+  @Put('update/incre')
+  async updateQuantityIncre(@Body() body: UpdateCartDto) {
+    return await this.cartService.updateQuantityIncre(body);
   }
-
-  @Put('/update/:id')
-  @ApiBody({ type: UpdateCartDto })
-  @ApiParam({ name: 'id', description: 'User ID' })
-  updateCart(@Body() body: UpdateCartDto, @Param() param: string) {
-    return this.cartService.updateCart(body, param);
+  @Put('update/decre')
+  async updateQuantityDecre(@Body() body: UpdateCartDto) {
+    return await this.cartService.updateQuantityDecre(body);
   }
-
-  @Delete('/delete/:id')
-  @ApiBody({ type: UpdateCartDto })
-  @ApiParam({ name: 'id', description: 'User ID' })
-  deleteCart(@Body() body: UpdateCartDto, @Param() param: string) {
-    return this.cartService.deleteCart(body,param);
+  @Delete(':id')
+  async remove(@Param('id') id: number) {
+    return await this.cartService.deleteCart(id);
   }
 }

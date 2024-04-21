@@ -8,36 +8,34 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class ReviewService {
   constructor(@InjectRepository(ReviewEntity) private reviewRepository: Repository<ReviewEntity>) { }
-  async createReview(id: number, createReviewDto: CreateReviewDto) {
-    const { user_id } = createReviewDto;
-    return await this.reviewRepository.createQueryBuilder('review')
+  async createReview( createReviewDto: CreateReviewDto) {
+    try {
+      const newComment = await this.reviewRepository.createQueryBuilder('reviews')
       .insert()
       .into(ReviewEntity)
       .values({
-        ...createReviewDto,
-        user_id: user_id as any,
-        product_id: id as any,
+        content : createReviewDto.content,
+        rating: createReviewDto.rating,
+        product_id: { product_id: createReviewDto.product_id },
+        user_id: { user_id: createReviewDto.user_id }
       })
-      .execute()
+      .execute();
+    return newComment;
+    } catch (error) {
+      return null
+    }
   }
 
   async reviewsInOneProduct(id: number, page: number) {
-    let limit = 5;
-    let skip = (page - 1) * limit;
-    return this.reviewRepository.createQueryBuilder('review')
-      .leftJoinAndSelect('review.product_id', 'product')
-      .leftJoinAndSelect('review.user_id', 'user')
-      .orderBy('review.review_id', 'DESC')
+    return this.reviewRepository.createQueryBuilder('reviews')
+      .leftJoinAndSelect('reviews.user_id', 'user')
+      .leftJoinAndSelect('reviews.product_id', 'product')
       .where('product.product_id = :id', { id })
-      .skip(skip)
-      .take(limit)
-      .getMany()
+      .orderBy("reviews.review_date", "DESC")
+      .getMany();
   }
 
-  reviewsByUser() {
-
-  }
-
+  
   updateReview(id: number, updateReviewDto: UpdateReviewDto) {
     return this.reviewRepository.createQueryBuilder('review')
       .update(ReviewEntity)
@@ -55,5 +53,15 @@ export class ReviewService {
       .from(ReviewEntity)
       .where('review.review_id = :id', { id })
       .execute()
+  }
+
+  async getAvgRatingProductDetail(id: number) {
+    const AvgRating = await this.reviewRepository
+      .createQueryBuilder()
+      .select('AVG(rating)', '')
+      .where('product_id = :product_id', { product_id: id })
+      .getRawOne();
+      // console.log(AvgRating)
+    return AvgRating
   }
 }

@@ -3,7 +3,7 @@ import { ProductEntity } from 'src/modules/products/entities/product.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'review' })
+@Entity({ name: 'reviews' })
 export class ReviewEntity {
   @PrimaryGeneratedColumn()
   review_id: number;
