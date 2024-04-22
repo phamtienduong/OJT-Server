@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -36,8 +37,20 @@ export class ProductsController {
   }
 
   @Get('get-list')
-  getAll() {
-    return this.productsService.getAll();
+  async getAll(@Query() query: any) {
+    const keySearch = query.search;
+
+    if (!keySearch) {
+      const result = await this.productsService.getAll();
+      return result;
+    }
+
+    const result = await this.productsService.getAll();
+    return result.filter((product) =>
+      product.product_name
+        .toLowerCase()
+        .includes(keySearch.toLowerCase().trim()),
+    );
   }
 
   @Patch('/update/:id')
