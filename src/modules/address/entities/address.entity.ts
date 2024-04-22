@@ -17,6 +17,6 @@ export class AddressEntity {
     @JoinColumn({ name: "user_id" })
     user_id: UserEntity;
 
-    @OneToMany(()=>BillEntity,(bill)=>bill.address_id)
-    bill:BillEntity[]
+    // @OneToMany(()=>BillEntity,(bill)=>bill.address_id)
+    // bill:BillEntity[]
 }

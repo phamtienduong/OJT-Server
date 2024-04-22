@@ -9,7 +9,7 @@ export enum BillStatus {
   ACCEPT = 'accept',
   CANCEL = 'cancel',
   USER_CANCEL = 'user_cancel',
-  RECEIVED = 'received',
+  ADMIN_CANCEL = 'admin_cancel',
 }
 // rating.enum.ts
 export enum Rating {
