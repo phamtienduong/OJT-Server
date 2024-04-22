@@ -116,16 +116,17 @@ export class CartService {
       };
     }
   }
-  async deleteCart(cart_id: number) {
-    const deleteCart = await this.cartRepository
+  async deleteCart(user_id: number) {
+    const deleteCarts = await this.cartRepository
       .createQueryBuilder()
       .delete()
       .from(CartEntity)
-      .where('cart_id = :cart_id', { cart_id: cart_id })
+      .where('user_id = :user_id', { user_id: user_id })
       .execute();
+
     return {
-      message: 'Delete cart successfully',
-      data: deleteCart,
+      message: 'Delete all carts successfully',
+      data: deleteCarts,
     };
   }
 }

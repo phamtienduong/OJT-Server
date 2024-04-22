@@ -2,33 +2,32 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { BillDetailService } from './bill_detail.service';
 import { CreateBillDetailDto } from './dto/create-bill_detail.dto';
 import { UpdateBillDetailDto } from './dto/update-bill_detail.dto';
+import { ApiParam } from '@nestjs/swagger';
 
-@Controller('bill-detail')
+@Controller('api/v1/bill-detail')
 export class BillDetailController {
   constructor(private readonly billDetailService: BillDetailService) {}
 
-  @Post()
-  create(@Body() createBillDetailDto: CreateBillDetailDto) {
-    return this.billDetailService.create(createBillDetailDto);
-  }
-
   @Get()
-  findAll() {
+  getAll() {
     return this.billDetailService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.billDetailService.findOne(+id);
+  @Patch("/admin_change/:id")
+  @ApiParam({ name: "id", description: "Bill ID" })
+  changeStatusbyAdmin(@Param("id") param:any, @Body() body:UpdateBillDetailDto) {
+    return this.billDetailService.changeStatusbyAdmin(param, body);
+
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBillDetailDto: UpdateBillDetailDto) {
-    return this.billDetailService.update(+id, updateBillDetailDto);
+  @Get("/:id")
+  @ApiParam({ name: "id", description: "User ID" })
+  getBillsByUser(@Param("id") id: any) {
+    return this.billDetailService.getBillsByUser(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.billDetailService.remove(+id);
+  @Patch("/:id1/:id2")
+  changeStatusbyUser(@Param("id1") id1: any, @Param("id2") id2: any, @Body() body: UpdateBillDetailDto) {
+    return this.billDetailService.changeStatusbyUser(id1, id2, body);
   }
 }
