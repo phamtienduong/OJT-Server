@@ -5,7 +5,7 @@ import { FavoriteProductEntity } from 'src/modules/favorite_product/entities/fav
 import { Impd } from 'src/modules/impd/entity/impd.entity';
 import { ProductInfoEntity } from 'src/modules/product_info/entities/product_info.entity';
 import { ReviewEntity } from 'src/modules/review/entities/review.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -13,12 +13,7 @@ export class ProductEntity {
   product_id: number;
   @Column()
   product_name: string;
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 0,
-  })
-  price: number;
+
   @Column()
   description: string;
   @Column({
