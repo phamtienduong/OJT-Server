@@ -62,6 +62,7 @@ export class ProductsService {
 
     qb.leftJoinAndSelect('products.category_id', 'category');
     qb.leftJoinAndSelect('products.impds', 'images');
+    qb.leftJoinAndSelect('products.product_info', 'product_info');
 
     const products = await qb.getMany();
 
