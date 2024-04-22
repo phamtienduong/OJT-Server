@@ -1,8 +1,9 @@
 import { CategoryEntity } from './modules/category/entities/category.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoryModule } from './modules/category/category.module';
+import { ConfigModule } from '@nestjs/config';
 
+import { CategoryModule } from './modules/category/category.module';
 import { ProductsModule } from './modules/products/products.module';
 import { ProductInfoModule } from './modules/product_info/product_info.module';
 import { ImageModule } from './modules/image/image.module';
@@ -29,25 +30,50 @@ import { AuthModule } from './modules/auth/auth.module';
 import { Impd } from './modules/impd/entity/impd.entity';
 import { ImpdModule } from './modules/impd/impd.module';
 
-@Module({
-  imports: [ 
-    TypeOrmModule.forRoot({
-      type:"mysql",
-      host:"localhost",
-      port:3306,
-      username:"root",
-      password:"",
-      database:"corsair_database",
-      entities:[UserEntity,AddressEntity,CategoryEntity,ProductEntity,ProductInfoEntity,
-        ImageEntity,CartEntity,BillEntity,BillDetailEntity,PaymentEntity,ReviewEntity,
-        FavoriteProductEntity, Impd],
-      synchronize:true
-    }), CategoryModule, UsersModule, ProductsModule, ProductInfoModule, 
-    ImageModule, CartModule, FavoriteProductModule, AddressModule, 
-    ReviewModule, BillsModule, BillDetailModule, PaymentModule, AuthModule
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { join } from 'path';
 
-    ],
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env.development',
+    }),
+    TypeOrmModule.forRoot({
+      type: "mysql",
+      host: "localhost",
+      port: 3306,
+      username: "root",
+      password: "",
+      database: "corsair_database",
+      entities: [UserEntity, AddressEntity, CategoryEntity, ProductEntity, ProductInfoEntity, ImageEntity, CartEntity, BillEntity, BillDetailEntity, PaymentEntity, ReviewEntity, FavoriteProductEntity, Impd],
+      synchronize: true
+    }), CategoryModule, UsersModule, ProductsModule, ProductInfoModule, ImageModule, CartModule, FavoriteProductModule, AddressModule, ReviewModule, BillsModule, BillDetailModule, PaymentModule, AuthModule,
+    MailerModule.forRoot({
+      // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        ignoreTLS: false,
+        secure: false,
+        auth: {
+          user: process.env.AUTH_USER_EMAIL,
+          pass: process.env.AUTH_USER_PASSWORD,
+        }
+      },
+      defaults: {
+        from: '"nest-modules" <modules@nestjs.com>',
+      },
+      template: {
+        dir: join(__dirname, 'templates'),
+        adapter: new EjsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

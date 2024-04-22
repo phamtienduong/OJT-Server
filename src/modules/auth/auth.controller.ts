@@ -46,6 +46,24 @@ export class AuthController {
       message: 'Login successfully',
       data: user
     }
-    
+  }
+
+  @Post("/reset")
+  @HttpCode(201)
+  async emailResetPassword(@Body('email') email: string) {
+    let id = await this.authService.emailResetPassword(email)
+    return {
+      message: 'gửi thành công, kiểm tra email',
+      id
+    }
+  }
+
+  @Post("/reset-password")
+  @HttpCode(201)
+  async resetPassword(@Body() data: any) {
+    await this.authService.resetPassword(data)
+    return {
+      message: 'Change password successfully'
+    }
   }
 }
