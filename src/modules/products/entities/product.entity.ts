@@ -13,7 +13,13 @@ export class ProductEntity {
   product_id: number;
   @Column()
   product_name: string;
-
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 1,
+  })
+  price: number;
   @Column()
   description: string;
   @Column({
