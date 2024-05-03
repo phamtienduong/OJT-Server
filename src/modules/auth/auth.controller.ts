@@ -16,54 +16,54 @@ export class AuthController {
 
   @Post('/login')
   @HttpCode(200)
-  async login( @Body() user:{email:string,password:string}) {
+  async login(@Body() user: { email: string; password: string }) {
     const users = await this.authService.login(user);
     return {
       message: 'Login successfully',
-      data: users
-    }
+      data: users,
+    };
   }
 
-  @Post("/login-google")
+  @Post('/login-google')
   @HttpCode(201)
   async loginByGoogle(@Body() body: any) {
-    console.log('body====>', body);
+    // console.log('body====>', body);
     const user = await this.authService.loginByGoogle(body);
 
     console.log(user);
-        return{
+    return {
       message: 'Login successfully',
-      data: user
-    }
+      data: user,
+    };
   }
-  
-  @Post("/login-facebook")
+
+  @Post('/login-facebook')
   @HttpCode(201)
   async loginByFaceBook(@Body() body: any) {
     const user = await this.authService.loginByFaceBook(body);
-    console.log(user);
-        return{
+    // console.log(user);
+    return {
       message: 'Login successfully',
-      data: user
-    }
+      data: user,
+    };
   }
 
-  @Post("/reset")
+  @Post('/send-mail')
   @HttpCode(201)
   async emailResetPassword(@Body('email') email: string) {
-    let id = await this.authService.emailResetPassword(email)
+    let id = await this.authService.emailResetPassword(email);
     return {
       message: 'gửi thành công, kiểm tra email',
-      id
-    }
+      id,
+    };
   }
-
-  @Post("/reset-password")
+  
+  @Post('/reset-password')
   @HttpCode(201)
   async resetPassword(@Body() data: any) {
-    await this.authService.resetPassword(data)
+    await this.authService.resetPassword(data);
     return {
-      message: 'Change password successfully'
-    }
+      message: 'Change password successfully',
+    };
   }
 }

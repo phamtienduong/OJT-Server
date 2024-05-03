@@ -9,8 +9,9 @@ import * as argon2 from 'argon2';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(UserEntity) private userRespository: Repository<UserEntity>
-  ) { }
+    @InjectRepository(UserEntity)
+    private userRespository: Repository<UserEntity>,
+  ) {}
   async createUser(dataUser: any) {
     try {
       const user = this.userRespository.create(dataUser);
@@ -22,15 +23,18 @@ export class UsersService {
 
   async getAllUser() {
     try {
-      const result = await this.userRespository.find({ where: { role: "user" } });
-      return result
+      const result = await this.userRespository.find({
+        where: { role: 'user' },
+      });
+      return result;
     } catch (error) {
       console.log(error);
     }
   }
 
   async getByEmail(email: string): Promise<UserEntity> {
-    return await this.userRespository.findOne({ where: { email } });
+    const check = await this.userRespository.findOne({ where: { email } });
+    return check;
   }
 
   async getById(id: number) {
@@ -39,17 +43,19 @@ export class UsersService {
 
   async updateUser(id: string, data: any) {
     const result = await this.userRespository.update(id, data);
-    const resultAccount = await this.userRespository.findOne({ where: { user_id: parseInt(id) } });
-    delete resultAccount.password
+    const resultAccount = await this.userRespository.findOne({
+      where: { user_id: parseInt(id) },
+    });
+    delete resultAccount.password;
     if (result.affected == 0) {
       return {
-        message: "User not found",
-      }
+        message: 'User not found',
+      };
     }
     return {
-      message: "Update successfully",
-      data: resultAccount
-    }
+      message: 'Update successfully',
+      data: resultAccount,
+    };
   }
 
   async updateStatus(id: number) {
@@ -59,15 +65,15 @@ export class UsersService {
         .createQueryBuilder()
         .update(UserEntity)
         .set({ status: 1 })
-        .where("user_id=:id", { id })
+        .where('user_id=:id', { id })
         .execute();
-      return updateActive
+      return updateActive;
     } else {
       const updateActive1 = await this.userRespository
         .createQueryBuilder()
         .update(UserEntity)
         .set({ status: 0 })
-        .where("user_id=:id", { id })
+        .where('user_id=:id', { id })
         .execute();
       return updateActive1;
     }
@@ -75,12 +81,13 @@ export class UsersService {
 
   async changePassword(id: number, newPassword: string) {
     const hashPassword = await argon2.hash(newPassword);
-    return this.userRespository.createQueryBuilder('user')
+    return this.userRespository
+      .createQueryBuilder()
       .update(UserEntity)
       .set({
-        password: hashPassword
+        password: hashPassword,
       })
-      .where("user.user_id = :id", { id })
-      .execute()
+      .where('user_id = :id', { id })
+      .execute();
   }
 }

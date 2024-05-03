@@ -9,8 +9,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private mailerService: MailerService
-  ) { }
+    private mailerService: MailerService,
+  ) {}
 
   async register(user: any): Promise<any> {
     const check = await this.usersService.getByEmail(user.email);
@@ -21,7 +21,7 @@ export class AuthService {
     const newUser = {
       ...user,
       password: hasdPassword,
-    }
+    };
     return await this.usersService.createUser(newUser);
   }
 
@@ -30,7 +30,6 @@ export class AuthService {
     if (!check) {
       const newUser = {
         ...body,
-        password: '',
       };
       await this.usersService.createUser(newUser);
       return {
@@ -39,14 +38,14 @@ export class AuthService {
           email: newUser.email,
           id: newUser.user_id,
           role: newUser.role,
-          avatar: newUser.avatar
+          avatar: newUser.avatar,
         }),
         user: newUser,
         access_token: await this.generateAccessToken({
           email: newUser.email,
           id: newUser.user_id,
           role: newUser.role,
-          avatar: newUser.avatar
+          avatar: newUser.avatar,
         }),
       };
     }
@@ -56,14 +55,14 @@ export class AuthService {
         email: check.email,
         id: check.user_id,
         role: check.role,
-        avatar: check.avatar
+        avatar: check.avatar,
       }),
       user: check,
       access_token: await this.generateAccessToken({
         email: check.email,
         id: check.user_id,
         role: check.role,
-        avatar: check.avatar
+        avatar: check.avatar,
       }),
     };
   }
@@ -72,7 +71,6 @@ export class AuthService {
     if (!check) {
       const newUser = {
         ...body,
-        password: '',
       };
       await this.usersService.createUser(newUser);
       return {
@@ -81,16 +79,16 @@ export class AuthService {
           email: newUser.email,
           id: newUser.user_id,
           role: newUser.role,
-          avatar: newUser.avatar
+          avatar: newUser.avatar,
         }),
         user: newUser,
         access_token: await this.generateAccessToken({
           email: newUser.email,
           id: newUser.user_id,
           role: newUser.role,
-          avatar: newUser.avatar
+          avatar: newUser.avatar,
         }),
-      }
+      };
     }
     return {
       token: await this.generateAccessToken({
@@ -98,16 +96,16 @@ export class AuthService {
         email: check.email,
         id: check.user_id,
         role: check.role,
-        avatar: check.avatar
+        avatar: check.avatar,
       }),
       user: check,
       access_token: await this.generateAccessToken({
         email: check.email,
         id: check.user_id,
         role: check.role,
-        avatar: check.avatar
+        avatar: check.avatar,
       }),
-    }
+    };
   }
 
   async login(user: any): Promise<any> {
@@ -120,7 +118,10 @@ export class AuthService {
       throw new HttpException('Password is incorrect', HttpStatus.BAD_REQUEST);
     }
     if (check.status == 1) {
-      throw new HttpException('Account has been locked', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Account has been locked',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     return {
       token: await this.generateAccessToken({
@@ -128,14 +129,14 @@ export class AuthService {
         email: check.email,
         id: check.user_id,
         role: check.role,
-        avatar: check.avatar
+        avatar: check.avatar,
       }),
       user: check,
       access_token: await this.generateAccessToken({
         email: check.email,
         id: check.user_id,
         role: check.role,
-        avatar: check.avatar
+        avatar: check.avatar,
       }),
     };
   }
@@ -151,14 +152,14 @@ export class AuthService {
     return this.jwtService.verify(token, {
       secret: 'token',
     });
-
   }
 
   async emailResetPassword(email: string) {
     const check = await this.usersService.getByEmail(email);
-    const pathTemplate = join(__dirname, 'templates', 'reset-password.ejs')
+    const pathTemplate = join(__dirname, 'templates', 'reset-password.ejs');
+
     if (!check) {
-      return;
+      throw new Error('Email does not exist');
     }
     await this.mailerService.sendMail({
       to: check.email,
@@ -166,8 +167,8 @@ export class AuthService {
       template: pathTemplate,
       context: {
         username: check.user_name,
-      }
-    })
+      },
+    });
     return check.user_id;
   }
 
@@ -177,6 +178,6 @@ export class AuthService {
     if (!check) {
       throw new HttpException('user does not exist', HttpStatus.BAD_REQUEST);
     }
-    return await this.usersService.changePassword(+id, password)
+    return await this.usersService.changePassword(+id, password);
   }
 }

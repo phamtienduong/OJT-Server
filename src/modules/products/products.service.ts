@@ -59,7 +59,7 @@ export class ProductsService {
   }
   async getAll() {
     const qb = this.productRepository.createQueryBuilder('products');
-
+    qb.leftJoinAndSelect('products.reviews', 'reviews');
     qb.leftJoinAndSelect('products.category_id', 'category');
     qb.leftJoinAndSelect('products.impds', 'images');
     qb.leftJoinAndSelect('products.product_info', 'product_info');

@@ -8,11 +8,14 @@ import {
   Delete,
   Put,
   Query,
+  SetMetadata,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBody, ApiParam } from '@nestjs/swagger';
+import { AuthGuard } from '../auth/guards/auth.guards';
 
 @Controller('/api/v1/products')
 export class ProductsController {
@@ -37,6 +40,8 @@ export class ProductsController {
   }
 
   @Get('get-list')
+  @SetMetadata('role', 'admin')
+  @UseGuards(AuthGuard)
   async getAll(@Query() query: any) {
     const keySearch = query.search;
 
