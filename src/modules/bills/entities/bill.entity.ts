@@ -20,7 +20,7 @@ export class BillEntity {
   @Column({
     type: 'enum',
     enum: BillStatus,
-    default: BillStatus.PENDING,
+    default: BillStatus.UNPAID,
   })
   status: string;
   @Column({

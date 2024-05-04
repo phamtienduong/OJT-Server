@@ -157,8 +157,9 @@ export class AuthService {
   async emailResetPassword(email: string) {
     const check = await this.usersService.getByEmail(email);
     const pathTemplate = join(__dirname, 'templates', 'reset-password.ejs')
-    if (!check) {
-      return;
+    console.log(check)
+    if (!check ) {
+      throw new HttpException('Email does not exist in system', HttpStatus.BAD_REQUEST);
     }
     await this.mailerService.sendMail({
       to: check.email,
@@ -168,6 +169,7 @@ export class AuthService {
         username: check.user_name,
       }
     })
+    // console.log(check)
     return check.user_id;
   }
 

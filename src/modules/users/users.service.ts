@@ -30,7 +30,10 @@ export class UsersService {
   }
 
   async getByEmail(email: string): Promise<UserEntity> {
-    return await this.userRespository.findOne({ where: { email } });
+const check = await this.userRespository.findOne({ where: { email } });
+// console.log(check)
+return check
+    // return await this.userRespository.findOne({ where: { email } });
   }
 
   async getById(id: number) {
