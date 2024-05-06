@@ -5,8 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductInfoEntity } from './entities/product_info.entity';
 import { CategoryEntity } from '../category/entities/category.entity';
 import { ProductEntity } from '../products/entities/product.entity';
-import { ImageEntity } from '../image/entities/image.entity';
-import { ImageService } from '../image/image.service';
+
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
@@ -15,11 +14,10 @@ import { AuthModule } from '../auth/auth.module';
       ProductInfoEntity,
       CategoryEntity,
       ProductEntity,
-      ImageEntity,
     ]),
     forwardRef(() => AuthModule),
   ],
   controllers: [ProductInfoController],
-  providers: [ProductInfoService, ImageService],
+  providers: [ProductInfoService],
 })
 export class ProductInfoModule {}

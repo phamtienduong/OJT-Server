@@ -1,4 +1,3 @@
-
 export enum UserRole {
   ADMIN = 'admin',
   USER = 'user',
@@ -11,7 +10,7 @@ export enum BillStatus {
   USER_CANCEL = 'user_cancel',
   ADMIN_CANCEL = 'admin_cancel',
   PAID = 'paid',
-  UNPAID = "unpaid"
+  UNPAID = 'unpaid',
 }
 // rating.enum.ts
 export enum Rating {

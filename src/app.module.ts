@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductsModule } from './modules/products/products.module';
 import { ProductInfoModule } from './modules/product_info/product_info.module';
-import { ImageModule } from './modules/image/image.module';
 import { CartModule } from './modules/cart/cart.module';
 import { FavoriteProductModule } from './modules/favorite_product/favorite_product.module';
 import { AddressModule } from './modules/address/address.module';
@@ -19,7 +18,6 @@ import { UsersModule } from './modules/users/users.module';
 import { AddressEntity } from './modules/address/entities/address.entity';
 import { ProductEntity } from './modules/products/entities/product.entity';
 import { ProductInfoEntity } from './modules/product_info/entities/product_info.entity';
-import { ImageEntity } from './modules/image/entities/image.entity';
 import { CartEntity } from './modules/cart/entities/cart.entity';
 import { BillEntity } from './modules/bills/entities/bill.entity';
 import { BillDetailEntity } from './modules/bill_detail/entities/bill_detail.entity';
@@ -40,15 +38,40 @@ import { join } from 'path';
       envFilePath: '.env.development',
     }),
     TypeOrmModule.forRoot({
-      type: "mysql",
-      host: "localhost",
+      type: 'mysql',
+      host: 'localhost',
       port: 3306,
-      username: "root",
-      password: "",
-      database: "corsair_database",
-      entities: [UserEntity, AddressEntity, CategoryEntity, ProductEntity, ProductInfoEntity, ImageEntity, CartEntity, BillEntity, BillDetailEntity, PaymentEntity, ReviewEntity, FavoriteProductEntity, Impd],
-      synchronize: true
-    }), CategoryModule, UsersModule, ProductsModule, ProductInfoModule, ImageModule, CartModule, FavoriteProductModule, AddressModule, ReviewModule, BillsModule, BillDetailModule, PaymentModule, AuthModule,
+      username: 'root',
+      password: '',
+      database: 'corsair_database',
+      entities: [
+        UserEntity,
+        AddressEntity,
+        CategoryEntity,
+        ProductEntity,
+        ProductInfoEntity,
+        CartEntity,
+        BillEntity,
+        BillDetailEntity,
+        PaymentEntity,
+        ReviewEntity,
+        FavoriteProductEntity,
+        Impd,
+      ],
+      synchronize: true,
+    }),
+    CategoryModule,
+    UsersModule,
+    ProductsModule,
+    ProductInfoModule,
+    CartModule,
+    FavoriteProductModule,
+    AddressModule,
+    ReviewModule,
+    BillsModule,
+    BillDetailModule,
+    PaymentModule,
+    AuthModule,
     MailerModule.forRoot({
       // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
       transport: {
@@ -59,7 +82,7 @@ import { join } from 'path';
         auth: {
           user: process.env.AUTH_USER_EMAIL,
           pass: process.env.AUTH_USER_PASSWORD,
-        }
+        },
       },
       defaults: {
         from: '"nest-modules" <modules@nestjs.com>',
@@ -76,4 +99,4 @@ import { join } from 'path';
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

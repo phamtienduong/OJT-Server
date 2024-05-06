@@ -1,8 +1,15 @@
 import { CartEntity } from 'src/modules/cart/entities/cart.entity';
 import { CategoryEntity } from 'src/modules/category/entities/category.entity';
-import { ImageEntity } from 'src/modules/image/entities/image.entity';
 import { ProductEntity } from 'src/modules/products/entities/product.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'product_info' })
 export class ProductInfoEntity {
@@ -12,7 +19,7 @@ export class ProductInfoEntity {
   color: string;
   @Column()
   ram: string;
-  
+
   @Column()
   stock: number;
 

@@ -4,7 +4,6 @@ import { ProductsController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
 import { CategoryEntity } from '../category/entities/category.entity';
-import { ImageEntity } from '../image/entities/image.entity';
 import { Impd } from '../impd/entity/impd.entity';
 import { ImpdModule } from '../impd/impd.module';
 import { AuthModule } from '../auth/auth.module';
@@ -12,12 +11,7 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      ProductEntity,
-      CategoryEntity,
-      ImageEntity,
-      Impd,
-    ]),
+    TypeOrmModule.forFeature([ProductEntity, CategoryEntity, Impd]),
     ImpdModule,
     forwardRef(() => AuthModule),
   ],

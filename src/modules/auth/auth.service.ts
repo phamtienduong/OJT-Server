@@ -69,47 +69,35 @@ export class AuthService {
     };
   }
   async loginByFaceBook(body: any) {
-    const check = await this.usersService.getByEmail(body.email);
-    if (!check) {
-      const newUser = {
-        ...body,
-      };
-      await this.usersService.createUser(newUser);
+    // Trước tiên kiểm tra xem người dùng đã tồn tại chưa
+    const user = await this.usersService.getByEmail(body.email);
+
+    // Nếu người dùng tồn tại, kiểm tra trạng thái của tài khoản
+    if (user) {
+      if (user.status == 1) {
+        throw new HttpException(
+          'Account has been locked',
+          HttpStatus.FORBIDDEN,
+        );
+      }
       return {
         token: await this.generateAccessToken({
-          user_name: newUser.user_name,
-          email: newUser.email,
-          id: newUser.user_id,
-          role: newUser.role,
-          avatar: newUser.avatar,
+          user_name: user.user_name,
+          email: user.email,
+          id: user.user_id,
+          role: user.role,
+          avatar: user.avatar,
         }),
-        user: newUser,
+        user: user,
         access_token: await this.generateAccessToken({
-          email: newUser.email,
-          id: newUser.user_id,
-          role: newUser.role,
-          avatar: newUser.avatar,
+          email: user.email,
+          id: user.user_id,
+          role: user.role,
+          avatar: user.avatar,
         }),
       };
     }
-    return {
-      token: await this.generateAccessToken({
-        user_name: check.user_name,
-        email: check.email,
-        id: check.user_id,
-        role: check.role,
-        avatar: check.avatar,
-      }),
-      user: check,
-      access_token: await this.generateAccessToken({
-        email: check.email,
-        id: check.user_id,
-        role: check.role,
-        avatar: check.avatar,
-      }),
-    };
   }
-
   async login(user: LoginDto): Promise<any> {
     const check = await this.usersService.getByEmail(user.email);
 
@@ -122,9 +110,7 @@ export class AuthService {
       throw new HttpException('Password is incorrect', HttpStatus.BAD_REQUEST);
     }
     if (check.status == 1) {
-
       throw new HttpException('Account has been locked', HttpStatus.FORBIDDEN);
-
     }
     return {
       token: await this.generateAccessToken({
@@ -161,13 +147,11 @@ export class AuthService {
     const check = await this.usersService.getByEmail(email);
     const pathTemplate = join(__dirname, 'templates', 'reset-password.ejs');
 
-
     if (!check) {
       throw new HttpException(
         'Email does not exist in the system',
         HttpStatus.BAD_REQUEST,
       );
-
     }
     await this.mailerService.sendMail({
       to: check.email,

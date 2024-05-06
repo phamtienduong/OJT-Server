@@ -116,12 +116,12 @@ export class CartService {
       };
     }
   }
-  async deleteCart(user_id: number) {
+  async deleteCart(cart_id: number) {
     const deleteCarts = await this.cartRepository
       .createQueryBuilder()
       .delete()
       .from(CartEntity)
-      .where('user_id = :user_id', { user_id: user_id })
+      .where('cart_id = :cart_id', { cart_id: cart_id })
       .execute();
 
     return {
