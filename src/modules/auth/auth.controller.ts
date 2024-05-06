@@ -17,6 +17,7 @@ export class AuthController {
   @Post('/login')
   @HttpCode(200)
   async login(@Body() user: { email: string; password: string }) {
+
     const result = await this.authService.login(user);
     return {
       message: 'Login successfully',
@@ -26,11 +27,13 @@ export class AuthController {
 
   @Post('/login-google')
   @HttpCode(200)
+
   async loginByGoogle(@Body() body: any) {
     // console.log('body====>', body);
     const user = await this.authService.loginByGoogle(body);
 
     console.log(user);
+
     return {
       message: 'Login successfully',
       data: user,
@@ -42,6 +45,7 @@ export class AuthController {
   async loginByFaceBook(@Body() body: any) {
     const user = await this.authService.loginByFaceBook(body);
     // console.log(user);
+
     return {
       message: 'Login successfully',
       data: user,
@@ -53,10 +57,12 @@ export class AuthController {
   async emailResetPassword(@Body('email') email: string) {
     let id = await this.authService.emailResetPassword(email);
     return {
+
       message: 'Sent successfully, check email',
       id,
     };
   }
+
 
   @Post('/reset-password')
   @HttpCode(201)

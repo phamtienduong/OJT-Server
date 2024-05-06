@@ -122,7 +122,9 @@ export class AuthService {
       throw new HttpException('Password is incorrect', HttpStatus.BAD_REQUEST);
     }
     if (check.status == 1) {
+
       throw new HttpException('Account has been locked', HttpStatus.FORBIDDEN);
+
     }
     return {
       token: await this.generateAccessToken({
@@ -159,11 +161,13 @@ export class AuthService {
     const check = await this.usersService.getByEmail(email);
     const pathTemplate = join(__dirname, 'templates', 'reset-password.ejs');
 
+
     if (!check) {
       throw new HttpException(
         'Email does not exist in the system',
         HttpStatus.BAD_REQUEST,
       );
+
     }
     await this.mailerService.sendMail({
       to: check.email,

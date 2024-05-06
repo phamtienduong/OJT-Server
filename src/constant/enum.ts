@@ -10,6 +10,8 @@ export enum BillStatus {
   CANCEL = 'cancel',
   USER_CANCEL = 'user_cancel',
   ADMIN_CANCEL = 'admin_cancel',
+  PAID = 'paid',
+  UNPAID = "unpaid"
 }
 // rating.enum.ts
 export enum Rating {
