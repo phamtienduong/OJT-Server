@@ -79,9 +79,6 @@ export class ProductsService {
   }
 
   async updateProducts(body: UpdateProductDto, param: any) {
-    console.log(body);
-    console.log(param);
-
     try {
       const result = await this.productRepository
         .createQueryBuilder()
@@ -90,11 +87,8 @@ export class ProductsService {
         .where('product_id = :id', { id: param.id })
         .execute();
 
-      // console.log(result);
-
       return { message: 'Cập nhật thành công' };
     } catch (error) {
-      // console.log(error)
       return { message: 'Lỗi rồi' };
     }
   }

@@ -36,6 +36,7 @@ export class UsersService {
     const check = await this.userRespository.findOne({ where: { email } });
     return check;
 
+
   }
 
   async getById(id: number) {

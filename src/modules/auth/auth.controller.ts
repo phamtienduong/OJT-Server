@@ -17,30 +17,35 @@ export class AuthController {
   @Post('/login')
   @HttpCode(200)
   async login(@Body() user: { email: string; password: string }) {
-    const users = await this.authService.login(user);
+
+    const result = await this.authService.login(user);
     return {
       message: 'Login successfully',
-      data: users,
-   };
+      data: result,
+    };
   }
 
   @Post('/login-google')
-  @HttpCode(201)
+  @HttpCode(200)
+
   async loginByGoogle(@Body() body: any) {
     // console.log('body====>', body);
     const user = await this.authService.loginByGoogle(body);
 
     console.log(user);
-  return {
+
+    return {
       message: 'Login successfully',
       data: user,
-   };
+    };
   }
 
- @Post('/login-facebook')
-  @HttpCode(201)
+  @Post('/login-facebook')
+  @HttpCode(200)
   async loginByFaceBook(@Body() body: any) {
     const user = await this.authService.loginByFaceBook(body);
+    // console.log(user);
+
     return {
       message: 'Login successfully',
       data: user,
@@ -52,10 +57,13 @@ export class AuthController {
   async emailResetPassword(@Body('email') email: string) {
     let id = await this.authService.emailResetPassword(email);
     return {
-      message: 'gửi thành công, kiểm tra email',
+
+      message: 'Sent successfully, check email',
       id,
     };
   }
+
+
   @Post('/reset-password')
   @HttpCode(201)
   async resetPassword(@Body() data: any) {
