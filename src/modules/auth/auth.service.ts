@@ -4,6 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as argon2 from 'argon2';
 import { join } from 'path';
+import { LoginDto } from './dto/login.dto';
+import { log } from 'console';
 @Injectable()
 export class AuthService {
   constructor(
@@ -108,20 +110,19 @@ export class AuthService {
     };
   }
 
-  async login(user: any): Promise<any> {
+  async login(user: LoginDto): Promise<any> {
     const check = await this.usersService.getByEmail(user.email);
+
     if (!check) {
       throw new HttpException('Email does not exist', HttpStatus.BAD_REQUEST);
     }
     const checkPassword = await argon2.verify(check.password, user.password);
+
     if (!checkPassword) {
       throw new HttpException('Password is incorrect', HttpStatus.BAD_REQUEST);
     }
     if (check.status == 1) {
-      throw new HttpException(
-        'Account has been locked',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Account has been locked', HttpStatus.FORBIDDEN);
     }
     return {
       token: await this.generateAccessToken({
@@ -159,7 +160,10 @@ export class AuthService {
     const pathTemplate = join(__dirname, 'templates', 'reset-password.ejs');
 
     if (!check) {
-      throw new Error('Email does not exist');
+      throw new HttpException(
+        'Email does not exist in the system',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     await this.mailerService.sendMail({
       to: check.email,
