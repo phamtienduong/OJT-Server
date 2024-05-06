@@ -5,7 +5,14 @@ import { FavoriteProductEntity } from 'src/modules/favorite_product/entities/fav
 import { Impd } from 'src/modules/impd/entity/impd.entity';
 import { ProductInfoEntity } from 'src/modules/product_info/entities/product_info.entity';
 import { ReviewEntity } from 'src/modules/review/entities/review.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -16,7 +23,7 @@ export class ProductEntity {
   @Column({
     type: 'decimal',
     precision: 10,
-    scale: 2,
+    scale: 0,
     default: 1,
   })
   price: number;
@@ -44,9 +51,6 @@ export class ProductEntity {
   })
   discount: number;
 
-
-
-
   @OneToMany(() => ProductInfoEntity, (product_info) => product_info.product_id)
   product_info: ProductInfoEntity;
 
@@ -62,17 +66,13 @@ export class ProductEntity {
   @OneToMany(() => BillDetailEntity, (bill_detail) => bill_detail.product_id)
   bill_details: BillDetailEntity[];
 
-
   @OneToMany(() => CartEntity, (cart) => cart.product_id)
   carts: CartEntity[];
-
 
   @ManyToOne(() => CategoryEntity, (category) => category.product)
   @JoinColumn({ name: 'category_id' })
   category_id: CategoryEntity;
 
-
-  @OneToMany(() => Impd, impd => impd.product)
+  @OneToMany(() => Impd, (impd) => impd.product)
   impds: Impd[];
-
 }

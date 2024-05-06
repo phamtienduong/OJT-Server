@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Put,
+  SetMetadata,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from '../auth/guards/auth.guards';
 
 @Controller('api/v1/users')
 export class UsersController {
@@ -13,48 +24,38 @@ export class UsersController {
     return {
       message: 'User was created successfully',
       data: result,
-    }
+    };
   }
 
-  @Get("list")
-  async getAllUser () {
+  @Get('list')
+  @SetMetadata('role', 'admin')
+  @UseGuards(AuthGuard)
+  async getAllUser() {
     const result = await this.usersService.getAllUser();
     return {
       message: 'Get all user successfully',
-      data: result
-    }
+      data: result,
+    };
   }
-  @Put("update/:id")
-  async updateUser (@Param('id') id: string, @Body() user: any) {
-    
+  @Put('update/:id')
+  async updateUser(@Param('id') id: string, @Body() user: any) {
     const result = await this.usersService.updateUser(id, user);
 
     return {
       message: 'Update user successfully',
-      data: result
-    }
-
-
+      data: result,
+    };
   }
   @Patch('active/:id')
-  async changeStatusUser(@Param('id') id: string, ) {
+  async changeStatusUser(@Param('id') id: string) {
     try {
       const result = await this.usersService.updateStatus(+id);
       return {
         message: 'Cập nhật thành công',
-        data: result
-      }
-
+        data: result,
+      };
     } catch (error) {
       console.log(error);
-      
-    }  
-  }  
-
-
-
-  
-
-
-  
+    }
+  }
 }
